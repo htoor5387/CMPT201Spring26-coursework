@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+
+  pid_t pid=fork();
+  
+  if (pid == 0){
+    cout << "\nParent: " << getpid() << "child" << getppid() <<endl
+  }
+  else{
+     cout << "\nParent: " << getpid() << "child" << getppid() <<endl
+
+  }
+
+  printf("DONE");
+}

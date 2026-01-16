@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() {
+
+  // pid_t pid=fork() to get PID
+  int pid = fork();
+  if (pid != 0) {
+    char *args[] = {"ls -a", NULL};
+    execlp("ls","ls","-a", NULL);
+  } // parent
+  else {
+    char *args[] = {"ls -alh", NULL};
+    execlp("ls","ls","-alh",NULL);
+  } // child
+
+  printf("DONE");
+}

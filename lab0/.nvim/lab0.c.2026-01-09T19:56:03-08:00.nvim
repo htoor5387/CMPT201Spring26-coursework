@@ -1,0 +1,5 @@
+#include 
+int main() {
+  printf("Hello World\n");
+  printf("This is Cmpt 201 lab 0\n");
+}

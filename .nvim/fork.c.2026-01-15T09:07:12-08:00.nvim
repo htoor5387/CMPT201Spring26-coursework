@@ -1,0 +1,13 @@
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+
+  // pid_t pid=fork() to get PID
+  fork();
+  for (int i = 0; i < 4; i++) {
+    printf("sleeping\n");
+    sleep(4);
+  }
+  printf("DONE");
+}

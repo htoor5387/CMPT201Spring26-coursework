@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+  char *buffer;
+  size_t size = 32;
+  size_t string;
+
+  printf("Please enter some text: ");
+  string = getline(&buffer, &size, stdin);
+}

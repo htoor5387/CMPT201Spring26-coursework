@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() {
+
+  // pid_t pid=fork() to get PID
+  int pid = fork();
+  if (pid != 0) {
+    execlp("ls", "ls", "-a", NULL);
+  } // parent
+  else {
+    execlp("ls", "ls", "-alh", NULL);
+  } // child
+
+  printf("DONE");
+}
