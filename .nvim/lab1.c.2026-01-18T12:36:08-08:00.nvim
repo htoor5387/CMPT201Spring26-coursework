@@ -10,7 +10,7 @@ int main() {
   while (1) {
     printf("Please enter some text: ");
     string = getline(&buffer, &size, stdin);
-    if (string == -1) {
+    if(num_char == -1){
       perror("getline failed");
       exit(EXIT_FAILURE);
     }

@@ -5,15 +5,11 @@
 int main() {
   char *buffer = NULL;
   size_t size;
-  ssize_t string;
+  size_t string;
 
   while (1) {
     printf("Please enter some text: ");
     string = getline(&buffer, &size, stdin);
-    if (string == -1) {
-      perror("getline failed");
-      exit(EXIT_FAILURE);
-    }
 
     char *saveptr;
     char *token = strtok_r(buffer, " ", &saveptr);
