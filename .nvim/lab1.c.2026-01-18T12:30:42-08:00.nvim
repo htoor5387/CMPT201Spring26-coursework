@@ -7,7 +7,7 @@ int main() {
   size_t size;
   size_t string;
 
-  while (1) {
+  while (buffer != "Stop") {
     printf("Please enter some text: ");
     string = getline(&buffer, &size, stdin);
 
