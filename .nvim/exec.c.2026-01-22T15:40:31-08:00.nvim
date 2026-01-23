@@ -7,10 +7,15 @@ int main() {
   // pid_t pid=fork() to get PID
   int pid = fork();
   if (pid != 0) {
-    execlp("ls", "ls", "-a", "~", NULL);
+    int wstatus = 0;
+    if (waitpid(pid, &wstatus, 0) == -1) {
+      perror("waitpid");
+      exit(EXIT_FAILURE);
+    }
+
   } // parent
   else {
-    execlp("ls", "ls", "-alh", NULL);
+    execlp("ls", "ls", "-al", NULL);
   } // child
 
   printf("DONE");

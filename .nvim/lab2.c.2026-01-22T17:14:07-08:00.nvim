@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main() {
+
+  int pid = fork();
+
+  char *buffer = NULL;
+  size_t size;
+  ssize_t string;
+
+  printf("Enter programs to run. \n");
+  string = getline(&buffer, &size, stdin);
+  if (string == -1) {
+    perror("getline failed");
+    exit(EXIT_FAILURE);
+  }
+
+  char *args[10];
+  char index = 0;
+  char *saveptr;
+  char *token = strtok_r(buffer, "/", &saveptr);
+
+  args[index] = token;
+  index++;
+  while (token != NULL) {
+
+    token = strtok_r(NULL, "/", &saveptr);
+    args[index];
+
+    printf("%s%d\n", args[index], index);
+    index++;
+  }
+  if (pid != 0) {
+
+    int wstatus = 0;
+    if (waitpid(pid, &wstatus, 0) == -1) {
+      perror("waitpid");
+      exit(EXIT_FAILURE);
+    }
+
+  } // parent gets input from user, waits for child to execute
+  else {
+    // exec();
+  } // child gets user input and executes it using exec
+
+  free(buffer);
+}

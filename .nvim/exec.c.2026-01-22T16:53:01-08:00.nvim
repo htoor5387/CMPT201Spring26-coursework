@@ -7,7 +7,7 @@ int main() {
   // pid_t pid=fork() to get PID
   int pid = fork();
   if (pid != 0) {
-    execlp("ls", "ls", "-a", "~", NULL);
+    execlp("ls", "/home", "-a", NULL);
   } // parent
   else {
     execlp("ls", "ls", "-alh", NULL);
