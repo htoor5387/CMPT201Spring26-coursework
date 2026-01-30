@@ -1,0 +1,42 @@
+#define POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+  char *buffer = NULL;
+  size_t size;
+  ssize_t string; // store length of line retrieved from user
+  char *array[5]; //history of lines
+  int maxLines = 5;
+  int numLines = 0; // tracks array size increase
+
+  while (1) {
+    printf("Enter input: ");
+    string = getline(&buffer, &size, stdin); // stores user inp to buffer
+    if (string == -1) {
+      perror("getline failed");
+      exit(EXIT_FAILURE);
+    }
+    buffer[string - 1] = '\0'; // adds terminator to user input
+
+
+    if (numLines >= maxLines) {
+      free(array[0]);
+
+    }//removes oldest line from history
+    
+
+    array[numLines] = buffer; // store user input in arr
+    numLines++;
+
+    if (strcmp(buffer, "print") == 0) {
+      for (int i = 0; i < numLines; i++) {
+        printf("%s\n", array[i]);
+      }
+    } // prints history of lines if print is inserted
+
+  }
+  free(buffer);
+  free(array);
+}

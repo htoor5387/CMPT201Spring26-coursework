@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+  char *buffer = NULL;
+  size_t size;
+  ssize_t string;
+
+  while (1) {
+    printf("Enter input: ");
+    string = getline(&buffer, &size, stdin); // stores user inp to buffer
+    if (string == -1) {
+      perror("getline failed");
+      exit(EXIT_FAILURE);
+    }
+
+    if (strcmp(buffer, "print\0") == 0) {
+      printf("%s", buffer);
+    }
+  }
+  free(buffer);
+}
