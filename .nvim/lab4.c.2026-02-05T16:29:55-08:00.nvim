@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
 #define BUF_SIZE 1024
@@ -25,21 +24,19 @@ void print_out(char *format, void *data, size_t data_size) {
 
 int main() {
 
-  // CREATE BLOCKS
+  //CREATE BLOCKS
   int *pbreak = sbrk(256);
   int *nextblock = pbreak + 128;
   struct header *head = (struct header *)&pbreak;
   struct header *next = (struct header *)&nextblock;
 
-  // INITIALIZE BLOCKS
-  memset(head, 0, 128);
-  memset(next, 1, 128);
+  //INITIALIZE BLOCKS
   head->size = 128;
   head->next = NULL;
   next->size = 128;
   next->next = head;
 
-  // PRINT VALS
+  //PRINT VALS
   print_out("header: %p\n", head, sizeof(head));
   print_out("next: %p\n", next, sizeof(next));
 
