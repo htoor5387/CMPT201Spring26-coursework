@@ -55,8 +55,6 @@ int main() {
   print_out("Next block size: %d\n", &next->size, sizeof(&next->size));
   print_out("Next block next: %p\n", &next->next, sizeof(next->next));
 
-  for (int i = 0; i < 10; i++) {
-    print_out("Header block bytes: %d\n", &head_seg[i], sizeof(int));
-    print_out("Next block bytes: %d\n", &next_seg[i], sizeof(int));
-  }
+  print_out("Header block bytes: %lu\n", &head_seg[1], sizeof(uint62_t));
+  print_out("Next block bytes: %d\n", &next_seg[1], sizeof(int));
 }

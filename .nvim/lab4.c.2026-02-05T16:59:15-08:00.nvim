@@ -37,26 +37,17 @@ int main() {
   next->size = 128;
   next->next = head;
 
-  int data_seg = 128 - sizeof(struct header); // data segment of a block
-  char *head_seg = (char *)head + sizeof(struct header);
-  char *next_seg = (char *)head + sizeof(struct header);
-
-  memset(head_seg, 0, data_seg);
-  memset(next_seg, 1, data_seg);
+  int data_region = 128 - sizeof(struct header); // data segment of block
+  memset((char *)head + sizeof(struct header), 0, data_region);
+  memset((char*)next + sizeof(struct header), 1, data_region);
 
   // PRINT VALS
-  print_out("header star address: %p\n", &head, sizeof(head));
-  print_out("next start address: %p\n", &next, sizeof(next));
-  // should be 128 bytes apart
+  print_out("header: %p\n", &head, sizeof(head));
+  print_out("next: %p\n", &next, sizeof(next));
 
   print_out("Header block size: %d\n", &head->size, sizeof(&head->size));
   print_out("Header block next: %p\n", &head->next, sizeof(&head->next));
 
   print_out("Next block size: %d\n", &next->size, sizeof(&next->size));
-  print_out("Next block next: %p\n", &next->next, sizeof(next->next));
-
-  for (int i = 0; i < 10; i++) {
-    print_out("Header block bytes: %d\n", &head_seg[i], sizeof(int));
-    print_out("Next block bytes: %d\n", &next_seg[i], sizeof(int));
-  }
+  print_out("Header block next: %p\n", &next->next, sizeof(next->next));
 }
