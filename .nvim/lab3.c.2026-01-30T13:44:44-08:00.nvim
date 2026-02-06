@@ -9,8 +9,7 @@ int main() {
   int numLines = 0; // tracks array size increase
 
   while (1) {
-    char *buffer = NULL; // must be in while loop to store new input to buff
-
+    char *buffer = NULL;  //must be in while loop to store newinput
     size_t size;
     size_t string; // store length of line retrieved from user
 

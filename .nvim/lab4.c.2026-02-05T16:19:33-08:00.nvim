@@ -1,0 +1,43 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define BUF_SIZE 1024
+struct header {
+  uint64_t size;
+  struct header *next;
+};
+
+void print_out(char *format, void *data, size_t data_size) {
+  char buf[BUF_SIZE];
+  ssize_t len = snprintf(buf, BUF_SIZE, format,
+                         data_size == sizeof(uint64_t) ? *(uint64_t *)data
+                                                       : *(void **)data);
+
+  if (len < 0) {
+    perror("snprintf error");
+    exit(0);
+  }
+  write(STDOUT_FILENO, buf, len);
+}
+
+int main() {
+
+  int *pbreak = sbrk(256);
+  int *nextblock = pbreak + 128;
+
+  struct header *head = (struct header *)&pbreak;
+
+  struct header *next = (struct header *)&nextblock;
+
+  head->size = 128;
+  head->next = NULL;
+  next->size = 128;
+  next->next = head;
+
+  print_out("Header: %d\n", &head, sizeof(&head));
+
+  print_out("Header block size: %d\n", &head->size, sizeof(&head->size));
+  print_out("Next block size: %d\n", &next->size, sizeof(&next->size));
+}

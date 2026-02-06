@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <unistd.h>
+
+
+struct header {
+  uint64_t size;
+  struct header* next;
+};
+
+void print_out(char *format, void *data, size_t data_size){
+  char buf[1024];
+  ssize_t len = snprinft(buf, BUF_SIZE, format, data_size == sizeof(uint64_t) ? *(uint64_t)data : (void **)data);
+
+  if (len < 0 ) {
+    handle_error("snprintf");
+  }
+  write(STDOUT_FILENO, buf, len);
+}
+
+int main() {
+
+  int pbreak = sbrk(256);
+  int nextblock = pbreak + 128; 
+  
+  struct header *head = (struct header *)pbreak;
+
+  struct header *next = (struct header *)nextblock;
+
+  head->size = 128;
+  
+  print_out("Header size: %p\n", &head->size, sizeof(&head->size));
+}
