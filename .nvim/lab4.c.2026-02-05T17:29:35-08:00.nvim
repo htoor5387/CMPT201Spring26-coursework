@@ -45,8 +45,8 @@ int main() {
   memset(next_seg, 1, data_seg);
 
   // PRINT VALS
-  print_out("header star address: %p\n", &head, sizeof(head));
-  print_out("next start address: %p\n", &next, sizeof(next));
+  print_out("header star address: %p\n", head, sizeof(head));
+  print_out("next start address: %p\n", next, sizeof(next));
   // should be 128 bytes apart
 
   print_out("Header block size: %d\n", &head->size, sizeof(&head->size));
