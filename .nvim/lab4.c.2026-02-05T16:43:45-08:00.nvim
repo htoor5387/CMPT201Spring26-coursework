@@ -27,7 +27,7 @@ int main() {
 
   // CREATE BLOCKS
   void *pbreak = sbrk(256);
-  void *nextblock = (void *)pbreak + 128;
+  void *nextblock = (char *)pbreak + 128;
   struct header *head = pbreak;
   struct header *next = (struct header *)nextblock;
 
@@ -36,18 +36,14 @@ int main() {
   head->next = NULL;
   next->size = 128;
   next->next = head;
+  memset(head, 0, 128);
+  memset(next, 1, 128);
 
-  int data_region = 128 - sizeof(struct header *); // data segment of block
-  memset((void *)head + sizeof(struct header *), 0, data_region);
-  memset(next + sizeof(struct header *), 1, data_region);
 
   // PRINT VALS
-  print_out("header: %p\n", &head, sizeof(head));
-  print_out("next: %p\n", &next, sizeof(next));
+  print_out("header: %p\n", head, sizeof(head));
+  print_out("next: %p\n", next, sizeof(next));
 
   print_out("Header block size: %d\n", &head->size, sizeof(&head->size));
-  print_out("Header block next: %p\n", &head->next, sizeof(&head->next));
-
   print_out("Next block size: %d\n", &next->size, sizeof(&next->size));
-  print_out("Header block next: %p\n", &next->next, sizeof(next->next));
 }
