@@ -6,9 +6,9 @@
 
 #define BUF_SIZE 1024
 struct header {
-  uint64_t size;       // 8bytes
-  struct header *next; // 8bytes
-}; // header should be 16 bytes
+  uint64_t size; //8bytes
+  struct header *next; //8bytes
+};//header should be 16 bytes
 
 void print_out(char *format, void *data, size_t data_size) {
   char buf[BUF_SIZE];
