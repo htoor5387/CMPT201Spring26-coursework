@@ -1,0 +1,56 @@
+#define POSIX_C_SOURCE 200809L // for getline
+#include <stdio.h>             //printf, perror, getline
+#include <stdlib.h>            //free, exit
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h> //fork, exec
+
+int main() {
+
+  // int pid = fork();
+
+  while (1) {
+    char *buffer = NULL;
+    size_t size;
+    ssize_t string;
+
+    printf("Enter programs to run. \n");
+    string = getline(&buffer, &size,
+                     stdin); // retun -1 if fail, num chars read on success.
+    // Dynamicly allocated mem to buffer tp prevent overflow,  but must free
+    // buffer
+
+    if (string == -1) {
+      perror("getline failed");
+      exit(EXIT_FAILURE);
+    } else if (string > 0) {
+      buffer[string - 1] = '\0';
+    }
+
+    pid_t pid = fork();
+    // clone proc, start new proc from here
+    if (pid) {
+
+      int wstatus = 0;
+
+      if (waitpid(pid, &wstatus, 0) == -1) {
+        perror("waitpid");
+        exit(EXIT_FAILURE);
+      }
+      if (WIFEXITED(wstatus)) {
+        printf("Child exited.\n");
+      } // prints if exit
+      free(buffer); // must free up mem used by buffer 
+      buffer = NULL;
+    } // parent gets input from user, waits for child to execute
+
+    else {
+      if (execlp(buffer, buffer, (char *)NULL) == -1) {
+        perror("execl failed \n");
+        exit(EXIT_FAILURE);
+      }
+    } // child gets user input and executes it using exec
+  }
+
+  return 0;
+}

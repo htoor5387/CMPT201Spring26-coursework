@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <string.h>
+#include <stdint.h>
+
+void *thread_func1(void *arg){
+  char const *arg_str = arg;
+
+  return (void *)(intptr_t)strlen(str_arg);
+} //create thread function to run
+
+int main(int argc, char *argv[]) {
+
+  pthread_t thread1;
+  printf("Hello\n");
+  
+  void * thread1_ret;
+
+  //create thread
+  pthread_create(&thread1, NULL, thread_func1, "Some text");
+
+  //waits for thread to finish
+  pthread_join(thread1, thread1_ret);
+  return 0;
+}

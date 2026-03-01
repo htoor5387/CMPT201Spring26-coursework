@@ -1,0 +1,33 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void my_func(int n) {
+  printf("function call number %d\n", n);
+} // create function to pass
+
+int my_func2() {
+  printf("function 2 called\n");
+  return 0;
+}
+
+int main() {
+
+  // creates void function pointer pointing to void my_func
+  // Note: function pointer type must match function type it's pointing to, and its args
+  void (*my_func_ptr)(int) = my_func;
+
+  // create int anotehr func ptr to my_func2 with no arg
+  int (*func_ptr2)() = my_func2;
+
+  for (int i = 1; i < 5; i++) {
+    // calls function pointer 4 times with arg 1-4
+    my_func_ptr(i);
+  }
+
+  // calls func ptr 2
+  func_ptr2();
+
+  return 0;
+}

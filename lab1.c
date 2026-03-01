@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +16,9 @@ int main() {
       exit(EXIT_FAILURE);
     }
 
-    char *saveptr;
+    char *saveptr; // stores the rest of string
+    // strtok splits buffer string into columns seperated by " ", returns first
+    // column, saves rest of string in saveptr
     char *token = strtok_r(buffer, " ", &saveptr);
 
     while (token != NULL) {
@@ -23,5 +26,5 @@ int main() {
       token = strtok_r(NULL, " ", &saveptr);
     }
   }
-  free(buffer);
+  //  free(buffer);
 }

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define maxLines 5
+#define maxLines 5 // max size of history array
 int main() {
   char *array[5];   // history of lines
   int numLines = 0; // tracks array size increase
@@ -23,14 +23,14 @@ int main() {
     buffer[string - 1] = '\0'; // adds terminator to user input
 
     if (numLines >= maxLines) {
-      free(array[0]);
+      //  free(array[0]);
       for (int i = 1; i < numLines; i++) {
         array[i - 1] = array[i];
       }
       numLines--;
     } // removes oldest line from history
 
-    array[numLines] = buffer; // store user input in arr
+    array[numLines] = buffer; // store user input at end of arr
     numLines++;
 
     if (strcmp(buffer, "print") == 0) {
@@ -39,5 +39,5 @@ int main() {
       }
     } // prints history of lines if print is inserted
   }
-  free(array);
+  //  free(array);
 }

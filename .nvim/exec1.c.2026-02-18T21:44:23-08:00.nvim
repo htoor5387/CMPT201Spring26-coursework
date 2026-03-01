@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int main() {
+
+  int pid = fork();
+  if (pid == -1) {
+    perror("fail");
+    exit(EXIT_FAILURE);
+  } // fork fail
+
+  char *args[] = {"ls", "-a"};
+    if (pid > 0) {
+      printf("parent exec\n");
+      execvp(args[0], args);
+    } // parent
+    else {
+      printf("child exec\n");
+
+      execlp("ls", "ls", "-alh");
+    } // child
+
+  return 0;
+}

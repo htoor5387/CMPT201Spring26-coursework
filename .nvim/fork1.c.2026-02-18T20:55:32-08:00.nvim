@@ -1,0 +1,26 @@
+#include <sys/types.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+
+int main(){
+  
+  //duplicate process, return child id if in parent
+  int pid = fork();
+
+  if (pid == -1){
+    perror("fail");
+    exit(EXIT_FAILURE);
+  }//fork fail
+  if(pid > 0 ){
+    printf("parent\n");
+  }//parent
+  else {
+    while(1){
+      printf("child sleeping\n");
+      sleep(2);
+    }
+  }//child
+
+  return 0;
+}

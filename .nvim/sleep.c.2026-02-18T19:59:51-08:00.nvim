@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+int main() {
+
+  // char array to print
+  char *msg = "Hello world!\n";
+  int i = 0;
+  while (i < strlen(msg)) {
+
+    printf("%c", msg[i++]);
+  //  printf("sleeping 3s\n");
+    sleep(1);
+  }
+  printf("\nDONE");
+  return 0;
+}

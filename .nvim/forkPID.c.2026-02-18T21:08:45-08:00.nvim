@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int main() {
+
+  // print current proc id (getpid()) and parent id (getppid())
+  printf("Start PID=%d, parent PID=%d\n", getpid(), getppid());
+
+  int pid = fork();
+  if (pid == -1) {
+    perror("fail");
+    exit(EXIT_FAILURE);
+  } // fork fail
+
+  if (pid > 0) {
+    printf("PARENT PROC: PID=%d, child PID=%d, also child %d\n", getppid(),
+           getpid());
+  } // parent
+  else {
+    printf("CHILD PROC: PID=%d, parent PID=%d\n", getpid(), getppid());
+  } // child
+
+  return 0;
+}

@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <wait.h>
+
+int main() {
+
+  // pid_t pid=fork() to get PID
+  int pid = fork();
+  int wstatus = 0;
+  if (pid > 0) {
+    int wid = waitpid(pid, &wstatus, 0);
+    
+    if (wid == -1){
+      perror("wait failed");
+      exit(1);
+    }
+
+    if (WIFEXITED(wstatus)) {
+      printf("Child exited normally %d\n", WEXITSTATUS(wstatus));
+    }
+    else{
+      printf("child exit abornmally");
+    }
+
+  } // parent
+  else {
+    execlp("ls", "ls", "-al", NULL);
+  } // child
+
+  printf("DONE\n");
+}

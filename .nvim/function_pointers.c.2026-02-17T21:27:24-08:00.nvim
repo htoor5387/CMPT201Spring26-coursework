@@ -1,0 +1,20 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void my_func(int n) {
+  printf("function call number %d\n", n);
+} // create function to pass
+
+int main() {
+
+  //creates function pointer pointing to my func
+  void (*my_func_ptr)(int) = my_func;
+
+  for(int i = 1; i < 5; i++){
+    //calls function pointer with arg
+    my_func_ptr(i);
+  }
+  return 0;
+}

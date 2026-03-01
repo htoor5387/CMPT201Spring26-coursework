@@ -1,0 +1,33 @@
+#include <pthread.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void *thread_func1(void *arg) {
+  // stores argument as a string
+  char const *arg_str = arg;
+  printf("thread created, string passed: %s\n", arg_str);
+  // return the length of string passed in argument
+  return (void *)(intptr_t)strlen(arg_str);
+
+} // create thread function to run
+
+int main(int argc, char *argv[]) {
+
+  pthread_t thread1;
+  printf("Hello\n");
+
+  // stores the return of thread function
+  void *th1_ret;
+
+  // create thread, passes arg to thread func
+  pthread_create(&thread1, NULL, thread_func1, "Some text");
+
+  // waits for thread to finish, stores return in th1_ret
+  pthread_join(thread1, &th1_ret);
+
+  printf("Length returned %d\n", (int)(intptr_t)th1_ret);
+
+  return 0;
+}

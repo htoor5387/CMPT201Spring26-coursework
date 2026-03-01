@@ -1,0 +1,35 @@
+#include <pthread.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int counter = 0;
+void *thread_func1(void *arg) {
+  // stores argument as a string
+  printf("thread created");
+  for(int i = 0; i < 1000000; i++){
+    counter++;
+  }
+  return 0;
+} // create thread function to run, threads increment global var
+
+int main(int argc, char *argv[]) {
+
+  pthread_t thread1;
+  pthread_t thread2;
+
+
+  // create threads
+  pthread_create(&thread1, NULL, thread_func1, NULL);
+  pthread_create(&thread2, NULL, thread_func1, NULL);
+
+  // waits for thread to finish
+  pthread_join(thread1, NULL);
+  pthread_join(thread2, NULL);
+
+  // print thread func return val, convert val from void * to (int)(intptr_t) ->
+  printf("Counter final value: %d\n", counter);
+
+  return 0;
+}

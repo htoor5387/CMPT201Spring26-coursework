@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+
+  //prints pid of curr proc (getpid()) and parent proc (getppid())
+  printf("Start PID=%d, parent pid=%d\n", getpid(), getppid());
+  int pid = fork();
+
+  if (pid != 0) {
+
+    printf("Parent PID=%d, parent pid=%d\n", getpid(), getppid());
+  }//par proc
+  else {
+    printf("Child PID=%d, child pid=%d\n", getpid(), getppid());
+  }//child proc
+
+  printf("DONE");
+}
