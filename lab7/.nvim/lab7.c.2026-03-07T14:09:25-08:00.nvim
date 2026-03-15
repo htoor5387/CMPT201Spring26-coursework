@@ -2,8 +2,9 @@
 #include <stdlib.h>
 
 #define MAX_INPUT 100
-// declare max size of array of structs to be 100
-// size of array shoudl be 100 * size of struct
+//declare max size of array of structs to be 100
+//size of array shoudl be 100 * size of struct
+
 
 typedef struct {
   int line_number;
