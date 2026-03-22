@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
   // create another thread, but passes the first argument entered in shell to
   // thread func
-  pthread_create(&thread2, NULL, thread_func1, (void *)argv[1]);
+  pthread_create(&thread2, NULL, thread_func1, argv[1]);
 
   // waits for thread to finish, stores return value in th1_ret
   pthread_join(thread1, &th1_ret);
