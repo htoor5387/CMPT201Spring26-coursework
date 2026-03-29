@@ -1,0 +1,54 @@
+#include <pthread.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// glbl var to incr
+int threadcount = 0;
+
+void *thread_func1(void *arg) {
+  // stores void *argument as a string (so we can use it)
+  char const *arg_str = arg;
+  threadcount++;
+  printf("thread %d created, string passed: %s\n", threadcount, arg_str);
+
+  // return the length of string passed
+  // argument casted as void * intptr_t
+  // intptr_t -> turns into something that is right size (not necc
+  // void * -> converts to right return val
+  return (void *)(intptr_t)strlen(arg_str);
+
+} // create thread function to run
+
+int main(int argc, char *argv[]) {
+
+  pthread_t thread1;
+  pthread_t thread2;
+
+  // stores the return value of thread functions
+  void *th1_ret;
+  void *th2_ret;
+
+  // if no arguments entered (arguments passed in shell/ stored in argv)
+  if (argc < 2) {
+
+    printf("enter args\n");
+  }
+  // create thread, insert arg to thread func
+  char p = pthread_create(&thread1, NULL, thread_func1, "Some text");
+
+  // create another thread, but passes the first argument entered in shell to
+  // thread func
+  pthread_create(&thread2, NULL, thread_func1, (void *)argv[1]);
+
+  // waits for thread to finish, stores return value in th1_ret
+  pthread_join(thread1, &th1_ret);
+  pthread_join(thread2, &th2_ret);
+
+  // print thread func return val, convert val from void * to (int)(intptr_t) ->
+  printf("Length returned: %d\n", (int)(intptr_t)th1_ret);
+  printf("Length returned: %d\n", (int)(intptr_t)th2_ret);
+
+  return 0;
+}
