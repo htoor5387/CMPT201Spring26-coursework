@@ -10,7 +10,7 @@ int main() {
   printf("creating file \n");
 
   int fd =
-      open("tmp", O_CREAT | O_TRUNC | O_RDWR, 0777); // create file called tmp
+      fopen("tmp1", O_CREAT | O_TRUNC | O_RDWR, 0777); // create file called tmp
   // open() opens takes a file called tmp, creates it and sets permissions to it
   // returns a file descriptor to edit file
 
@@ -19,21 +19,8 @@ int main() {
   printf("write %s to file \n", string);
   write(fd, string, len); // write string to file, takes file descriptor to
                           // edit, string and length of string
-  int offs = len / 2;
-
-  lseek(fd, offs, SEEK_SET); // adj offset
-  // lseet take file desc of file to edit, num bytes to adjust, location of file
-  // offs
-  printf("adjust file offset %d\n", offs);
-
-  char buf[100];
-  size_t count;
-  count =
-      read(fd, buf,
-           sizeof(buf)); // read from file with adjusted offset offset to buf
-
-  buf[count] = '\0'; // null terminate buffer read from file
-  printf("%s\n", buf);
-
-  close(fd); // closes file, writes remaining buffered data to file
+  while (1) {
+    sleep(10);
+  }
+  return 0;
 }
