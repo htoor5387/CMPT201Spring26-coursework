@@ -1,0 +1,72 @@
+#include <arpa/inet.h>
+#include <errno.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+int total_message_count = 0;
+int client_id_counter = 1;
+
+// Mutexs to protect above global state.
+pthread_mutex_t count_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t client_id_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+struct client_info {
+  int cfd;
+  int client_id;
+};
+// struct to store clients id and socket file descriptor
+
+int main(int argc, char *argv[]) {
+  // declare socket file desc, socket addr
+
+  int sfd = socket(AF_INET, SOCK_STREAM, 0);
+
+  int port = atoi(argv[1]);
+  struct sockaddr_in addr;
+  memset(&addr, 0, sizeof(struct sockaddr_in));
+
+  addr.sin_family = AF_INET;
+  addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  addr.sin_port = htons(port);
+
+  bind(sfd, (struct sockaddr *)&addr, sizeof(struct sockaddr_in));
+
+  listen(sfd, 100); // mac connections 100
+
+
+  printf("accepting client \n");
+  // create a client
+  struct sockaddr_in client;
+
+  socklen_t cl_size = sizeof(client);
+  int cfd =
+      accept(sfd, (struct sockaddr *)&client, (socklen_t *)sizeof(client));
+  // now client sin_addr, sin family and sin port stored in client
+
+  // client now accepted
+  // listen to messages from client until enter button/\n
+  
+  printf("accepting client \n");
+    char buf[1024];
+  int index = 0;
+  while (1) {
+    char byte;
+
+    int size = read(cfd, &byte, 1);
+    buf[index++] = byte;
+
+    if (byte == '\n') {
+      printf("message sent: %s\n", buf);
+
+    } // read a complete message
+    else {
+      continue;
+    }
+  }
+
+  close(sfd);
+}

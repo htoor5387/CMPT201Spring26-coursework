@@ -1,0 +1,40 @@
+#include <arpa/inet.h>
+#include <errno.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+struct client_info {
+  int cfd;
+  int client_id;
+};
+// struct to store clients id and socket file descriptor
+
+int main(int argc, char *argv[]) {
+  int cfd;
+
+  int port = atoi(argv[1]);
+  // create socket
+  cfd = socket(AF_INET, SOCK_STREAM, 0);
+
+  struct sockaddr_in addr;
+  memset(&addr, 0, sizeof(struct sockaddr_in));
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(port);
+  addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+  connect(cfd, (struct sockaddr *)&addr, sizeof(struct sockaddr_in));
+
+  while (1) {
+    char buf[100];
+    int size = 100;
+    int r = read(0, &buf, size);
+    send(cfd, buf, r, 0);
+  }
+
+  close(cfd);
+  return 0;
+}
