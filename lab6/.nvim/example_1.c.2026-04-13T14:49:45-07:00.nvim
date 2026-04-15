@@ -1,0 +1,102 @@
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define ASSERT(expr)                                                           \
+  {                                                                            \
+    if (!(expr)) {                                                             \
+      fprintf(stderr, "Assertion failed: %s\n", #expr);                        \
+      exit(1);                                                                 \
+    }                                                                          \
+  }
+
+#define TEST(expr)                                                             \
+  {                                                                            \
+    if (!(expr)) {                                                             \
+      fprintf(stderr, "Test failed: %s\n", #expr);                             \
+      exit(1);                                                                 \
+    } else {                                                                   \
+      printf("Test passed: %s\n", #expr);                                      \
+    }                                                                          \
+  }
+
+//defines a node struct with its data and next block in LL
+typedef struct node {
+  uint64_t data;
+  struct node *next;
+} node_t;
+
+node_t *head = NULL;
+
+void insert_sorted(uint64_t data) {
+  node_t *new_node = malloc(sizeof(node_t));//allocates a new node to add to LL
+  new_node->data = data;//sets new node data
+  new_node->next = NULL;
+
+  if (head == NULL) {
+    head = new_node;//if LL empty, new node inserts at head of LL
+  } else {
+    node_t *curr = head;//tracks current node, starting at head
+    node_t *prev = NULL;//tracks prev node
+
+    bool inserted = false;//flag to check if new node added to LL
+    while (curr != NULL && !inserted) {//traverse list until ndoe inserted
+
+      if (data < curr->data) {//check if our new nodes data < data of current node in LL
+        //inserts node in
+        if (curr == head) {
+          new_node->next = curr;//new node next points to old head
+          head = new_node;//new node becomes new head
+          inserted = true;
+        } // case we insert new node before head and set it to new head
+        else {
+          prev->next = new_node;//insert node after prev block
+          new_node->next = curr;//insert node before curr block
+          inserted = true;
+        } // insert before current block and after prev block
+      } else if (curr->next == NULL) {
+        curr->next = new_node;//add to end
+        new_node->next = NULL;//new node next becomes NULL
+
+      } // handle case if we reach end of LL, we insert at end
+
+      //traverse to next blocks until we each end of list
+      prev = curr;
+      curr = curr->next;
+    }
+  }
+}
+
+int index_of(uint64_t data) {
+  node_t *curr = head;
+  int index = 0;
+
+  while (curr != NULL) {
+    if (curr->data == data) {
+      return index;
+    }
+
+    curr = curr->next;
+    index++;
+  }
+
+  return -1;
+}//reutrns blocks index
+
+int main() {
+  //inserts block at correct index
+  insert_sorted(1);//insert index 0
+  insert_sorted(2);//insert ndex 1
+  insert_sorted(5);//insert index 2
+  insert_sorted(3);//inserts imdex 2, 5 becomes index 3
+
+  TEST(index_of(3) == 2);
+
+  insert_sorted(0);
+  insert_sorted(4);
+
+  TEST(index_of(4) == 4);
+
+  return 0;
+}

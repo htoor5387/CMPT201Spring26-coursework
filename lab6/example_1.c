@@ -21,6 +21,7 @@
     }                                                                          \
   }
 
+// defines a node struct with its data and next block in LL
 typedef struct node {
   uint64_t data;
   struct node *next;
@@ -29,37 +30,41 @@ typedef struct node {
 node_t *head = NULL;
 
 void insert_sorted(uint64_t data) {
-  node_t *new_node = malloc(sizeof(node_t));
-  new_node->data = data;
+  node_t *new_node = malloc(sizeof(node_t)); // allocates a new node to add to
+                                             // LL
+  new_node->data = data; // sets new node data
   new_node->next = NULL;
 
   if (head == NULL) {
-    head = new_node;
+    head = new_node; // if LL empty, new node inserts at head of LL
   } else {
-    node_t *curr = head;
-    node_t *prev = NULL;
+    node_t *curr = head; // tracks current node, starting at head
+    node_t *prev = NULL; // tracks prev node
 
-    bool inserted = false;
-    while (curr != NULL && !inserted) {
+    bool inserted = false;              // flag to check if new node added to LL
+    while (curr != NULL && !inserted) { // traverse list until ndoe inserted
 
-      if (data < curr->data) {
+      if (data < curr->data) { // check if our new nodes data < data of current
+                               // node in LL
+        // inserts node in
         if (curr == head) {
-          new_node->next = curr;
-          head = new_node;
+          new_node->next = curr; // new node next points to old head
+          head = new_node;       // new node becomes new head
           inserted = true;
-        } // case we insert at head
+        } // case we insert new node before head and set it to new head
         else {
-          prev->next = new_node;
-          new_node->next = curr;
+          prev->next = new_node; // insert node after prev block
+          new_node->next = curr; // insert node before curr block
           inserted = true;
-        } // insert in middle
+        } // insert before current block and after prev block
       } else if (curr->next == NULL) {
-        curr->next = new_node;
-        new_node->next = NULL;
+        curr->next = new_node; // add to end
+        new_node->next = NULL; // new node next becomes NULL
 
       } // handle case if we reach end of LL, we insert at end
 
-      prev = curr; // insert in beginning of LL sorted
+      // traverse to next blocks until we each end of list
+      prev = curr;
       curr = curr->next;
     }
   }
@@ -79,13 +84,14 @@ int index_of(uint64_t data) {
   }
 
   return -1;
-}
+} // reutrns blocks index
 
 int main() {
-  insert_sorted(1);
-  insert_sorted(2);
-  insert_sorted(5);
-  insert_sorted(3);
+  // inserts block at correct index
+  insert_sorted(1); // insert index 0
+  insert_sorted(2); // insert ndex 1
+  insert_sorted(5); // insert index 2
+  insert_sorted(3); // inserts imdex 2, 5 becomes index 3
 
   TEST(index_of(3) == 2);
 

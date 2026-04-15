@@ -1,0 +1,37 @@
+#include <arpa/inet.h>
+#include <errno.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[]) {
+  int cfd;
+
+  char *pathname = "tmp";                // a socket file for communication
+  cfd = socket(AF_UNIX, SOCK_STREAM, 0); // local unix connection
+
+  struct sockaddr_un addr;
+  addr.sun_family = AF_UNIX;
+  strcpy(addr.sun_path,
+         pathname); // sets path of socket file, max size of filename is 108
+
+  connect(cfd, (struct sockaddr *)&addr, sizeof(addr));
+
+  while (1) {
+    char buf[100];
+    int size = 100;
+    int r = read(STDIN_FILENO, &buf, size); // read from stdin into buf
+    // send(cfd, buf, r, 0);
+    printf("string read from stdin: %s\n", buf);
+    buf[r] = '\0';//null tern string
+    write(cfd, &buf, size); // write stirng to socket
+
+  }
+
+  close(cfd); // close client connection
+  return 0;
+}

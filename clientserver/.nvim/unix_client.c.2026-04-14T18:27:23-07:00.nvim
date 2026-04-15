@@ -1,0 +1,42 @@
+#include <arpa/inet.h>
+#include <errno.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+struct client_info {
+  int cfd;
+  int client_id;
+};
+// struct to store clients id and socket file descriptor
+
+int main(int argc, char *argv[]) {
+  int cfd;
+
+//  int port = atoi(argv[1]);
+  // create socket
+  // cfd = socket(AF_INET, SOCK_STREAM, 0);
+  char *pathname = "tmp"; //a socket file for communication
+  cfd = socket(AF_UNIX, SOCK_STREAM, 0);//local unix connection
+
+  struct sockaddr_un addr;
+  addr.sun_family = AF_INET;
+  strcpy(addr.sun_path, pathname);//sets path of socket file, max size of filename is 108 
+
+  connect(cfd, (struct sockaddr *)&addr, sizeof(struct sockaddr_un));
+
+  while (1) {
+    char buf[100];
+    int size = 100;
+    int r = read(0, &buf, size); // read from stdin into buf
+    // send(cfd, buf, r, 0);
+    write(cfd, &buf, 1); // write buff to socket
+  }
+
+  close(cfd);//close client connection
+  return 0;
+}

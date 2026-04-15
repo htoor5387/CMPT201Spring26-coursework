@@ -17,7 +17,7 @@
 
 int main(int argc, char *argv[]) {
   int fd;
-  char *addr;
+  char *addr; // address to our mmap region
   off_t offset, pa_offset;
   size_t length;
   ssize_t s;
@@ -32,17 +32,23 @@ int main(int argc, char *argv[]) {
   if (fd == -1)
     handle_error("open");
 
-  if (fstat(fd, &sb) == -1) // To obtain file size, store struct with info about file in sb
+  if (fstat(fd, &sb) ==
+      -1) // To obtain file size, store struct with info about file in sb
     handle_error("fstat");
 
-  length = sb.st_size; //store file size in lenght from struct sb.st_size
+  length = sb.st_size; // store file size in lenght from struct sb.st_size
 
-  addr = mmap(NULL, length, PROT_READ, MAP_PRIVATE, fd, 0);//create file mem mapping
- //memory mapped between heap and stack
+  addr = mmap(NULL, length, PROT_READ, MAP_PRIVATE, fd,
+              0); // create file mem mapping
+  // return start address to mmap region
+  // PROT_READ - can only read form this region starting at addr
+  // sets mmap region to private mapped file - nt shared
+  // memory mapped between heap and stack
   if (addr == MAP_FAILED)
     handle_error("mmap");
 
-  s = write(STDOUT_FILENO, addr, length); //prints out content of file
+  s = write(STDOUT_FILENO, addr,
+            length); // prints out contents of file file mapped to region
   if (s != length) {
 
     if (s == -1)
@@ -52,7 +58,7 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  munmap(addr, length);
+  munmap(addr, length); // unmap mmap region
   close(fd);
 
   exit(EXIT_SUCCESS);

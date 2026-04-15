@@ -6,7 +6,7 @@
 #define maxLines 5 // max size of history array
 int main() {
   char *array[5];   // history of lines
-  int numLines = 0; // tracks array size increase
+  int numLines = 0; // tracks num items in array
 
   while (1) {
     char *buffer = NULL; // must be in while loop to store new input to buff
@@ -22,16 +22,18 @@ int main() {
     }
     buffer[string - 1] = '\0'; // adds terminator to user input
 
-    if (numLines >= maxLines) {
+    if (numLines >=
+        maxLines) { // if oru array is full, remove first item to free up space
       //  free(array[0]);
       for (int i = 1; i < numLines; i++) {
-        array[i - 1] = array[i];
+        array[i - 1] =
+            array[i]; // shift over array by 1 to remove first element in array
       }
-      numLines--;
-    } // removes oldest line from history
+      numLines--; // once items removed, update items in array
+    }
 
-    array[numLines] = buffer; // store user input at end of arr
-    numLines++;
+    array[numLines] = buffer; // add item at end of arr (index 4)
+    numLines++;               // update items in array once item added
 
     if (strcmp(buffer, "print") == 0) {
       for (int i = 0; i < numLines; i++) {

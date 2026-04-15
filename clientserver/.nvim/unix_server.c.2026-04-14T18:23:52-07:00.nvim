@@ -1,0 +1,72 @@
+#include <arpa/inet.h>
+#include <errno.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>//for unix
+#include <unistd.h>
+
+
+int total_message_count = 0;
+int client_id_counter = 1;
+
+// Mutexs to protect above global state.
+pthread_mutex_t count_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t client_id_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+struct client_info {
+  int cfd;
+  int client_id;
+};
+// struct to store clients id and socket file descriptor
+
+int main(int argc, char *argv[]) {
+
+  char *pathname = "tmp";//socket file that server and clients communicate thru
+
+  int sfd = socket(AF_UNIX, SOCK_STREAM, 0);
+
+  struct sockaddr_un addr;//declare unix addr
+
+  addr.sun_family = AF_UNIX;
+  strcpy(addr.sun_path, pathname);
+
+  unlink(pathname); //unlink old socket file
+
+  bind(sfd, (struct sockaddr *)&addr, sizeof(struct sockaddr_in));
+
+  listen(sfd, 100); // mac connections 100
+
+  printf("accepting client \n");
+  // create a client struct for each client accepted
+  struct sockaddr_un client;
+
+  socklen_t cl_size = sizeof(client);//for passing client addr struct size to accept(.,.,socklen)
+  int cfd = accept(sfd, (struct sockaddr *)&client, &cl_size);
+  // stored connecting clients sun_addr, path in  carclient
+
+
+  //int cfd = accept(sfd, NULL, NULL); //this also works but doesn't store client addr info
+  // client now accepted
+  // listen to messages from client until enter button/\n
+
+  printf("accepted client \n");
+  char buf[1024];
+  int index = 0;
+  while (1) {
+    char byte;
+
+    int size = read(cfd, &byte, 1);//read from client
+    buf[index++] = byte;
+
+    if (byte == '\n') {
+      buf[index] = '\0';
+      printf("message sent: %s\n", buf);
+      index = 0;
+    } // read a complete message
+  }
+  close(cfd);
+  close(sfd);
+}

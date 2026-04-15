@@ -4,26 +4,29 @@
 #include <string.h>
 
 int main() {
-  char *buffer = NULL;
-  size_t size;
-  ssize_t string;
+  char *buffer = NULL; // deckare a string ptr
+  size_t size;         // size of char*
+  ssize_t string;      // store amnt of chars read from getline
 
   while (1) {
     printf("Please enter some text: ");
-    string = getline(&buffer, &size, stdin);
+    string = getline(
+        &buffer, &size,
+        stdin); // allocates mem, stores chars entered from terminal to buffer
     if (string == -1) {
       perror("getline failed");
       exit(EXIT_FAILURE);
-    }
+    } // string stores num chars read including \n, -1 on fail
 
     char *saveptr; // stores the rest of string
     // strtok splits buffer string into columns seperated by " ", returns first
-    // column, saves rest of string in saveptr
-    char *token = strtok_r(buffer, " ", &saveptr);
+    // column, saves rest of characters after " " in saveptr
+    // returns the characters before first " "
+    char *token = strtok_r(buffer, " ", &saveptr); // t
 
     while (token != NULL) {
       printf("%s\n", token);
-      token = strtok_r(NULL, " ", &saveptr);
+      token = strtok_r(NULL, " ", &saveptr); // saves the position we are in
     }
   }
   //  free(buffer);

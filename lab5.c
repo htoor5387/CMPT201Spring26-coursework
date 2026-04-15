@@ -2,10 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// define the header of our blocks
 struct header {
-  uint64_t size;
-  struct header *next;
-  int id;
+  uint64_t size; // size of block from header start to next header/end of block
+  struct header
+      *next; // next block in free list of blocks (NULL if tail/no free avail;
+  int id;    // block id
 };
 
 void initialize_block(struct header *block, uint64_t size, struct header *next,
@@ -13,18 +15,20 @@ void initialize_block(struct header *block, uint64_t size, struct header *next,
   block->size = size;
   block->next = next;
   block->id = id;
-}
+} // helper function to set the size, next, id of our header
 
 int find_first_fit(struct header *free_list_ptr, uint64_t size) {
   // TODO: Implement first fit
 
+  // first fit - traverse thru list until a block that fits found
   while (free_list_ptr != NULL) {
-    if (free_list_ptr->size >= size) {
-      return free_list_ptr->id;
+    if (free_list_ptr->size >=
+        size) {                 // check if free block size < size for alloc
+      return free_list_ptr->id; // return block of id found
     } // found free block fit
 
-    free_list_ptr = free_list_ptr->next;
-  }
+    free_list_ptr = free_list_ptr->next; // traverse to next if not found
+  } // NULL = no more free blokcs
 
   return -1; // no free block that fit
 }
@@ -35,9 +39,13 @@ int find_best_fit(struct header *free_list_ptr, uint64_t size) {
   int bf_size = 1000; // compares block size
 
   while (free_list_ptr != NULL) {
+    // condition to find best fit - free block must be larger than size of alloc
+    // cond 2 - free block size must be less than any other prev blocks size in
+    // list
     if (free_list_ptr->size >= size && bf_size > free_list_ptr->size) {
-      bf_size = free_list_ptr->size;
-      best_fit_id = free_list_ptr->id;
+      bf_size =
+          free_list_ptr->size; // track the size ofthe free block as best fit
+      best_fit_id = free_list_ptr->id; // tracks id of besgt fit
     }
     free_list_ptr = free_list_ptr->next;
   }
@@ -52,8 +60,10 @@ int find_worst_fit(struct header *free_list_ptr, uint64_t size) {
   int wf_size = 0;
 
   while (free_list_ptr != NULL) {
+    // 2 conditions - 1st same as best fit
+    // 2nd condition 0 free block size > prev free blokc size
     if (free_list_ptr->size >= size && wf_size < free_list_ptr->size) {
-      wf_size = free_list_ptr->size;
+      wf_size = free_list_ptr->size; // track size of fb as worst fit
       worst_fit_id = free_list_ptr->id;
     }
     free_list_ptr = free_list_ptr->next;
@@ -64,6 +74,7 @@ int find_worst_fit(struct header *free_list_ptr, uint64_t size) {
 
 int main(void) {
 
+  // allocates headers of free blocks to heap
   struct header *free_block1 = (struct header *)malloc(sizeof(struct header));
   struct header *free_block2 = (struct header *)malloc(sizeof(struct header));
   struct header *free_block3 = (struct header *)malloc(sizeof(struct header));
@@ -71,6 +82,7 @@ int main(void) {
   struct header *free_block5 =
       (struct header *)malloc(sizeof(struct header)); // blocks 16 bytes
 
+  // initialize fl headers and their size, next, id
   initialize_block(free_block1, 6, free_block2,
                    1); // block, block size, block next, block id, size 6
   initialize_block(free_block2, 12, free_block3, 2); // size 12
@@ -78,8 +90,10 @@ int main(void) {
   initialize_block(free_block4, 8, free_block5, 4);  // size 8
   initialize_block(free_block5, 4, NULL, 5);
 
+  // initialize head of the free list
   struct header *free_list_ptr = free_block1;
 
+  // calls the first/best/worst fit funcs
   int first_fit_id = find_first_fit(free_list_ptr, 7); // 2nd block
   int best_fit_id = find_best_fit(free_list_ptr, 7);   // 4th
   int worst_fit_id = find_worst_fit(free_list_ptr, 7); // 3rd
@@ -89,6 +103,7 @@ int main(void) {
   printf("best fit id = %d\n", best_fit_id);
   printf("worst fit id = %d\n", worst_fit_id);
 
+  // free blocks allocated rto heap witrh malloc
   free(free_block1);
   free(free_block2);
   free(free_block3);

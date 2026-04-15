@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 
   int ppipefd[2]; // pipe for parent send to child
   int cpipefd[2]; // pipe for child send to parent
-  char buf;
+  char buf;       // stores byte to read from pipe
   pid_t cpid;
 
   if (argc != 2) {
@@ -25,46 +25,62 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  if (pipe(ppipefd) == -1) {
+  if (pipe(ppipefd) == -1) { // create pipe
     perror("pipe");
     exit(EXIT_FAILURE);
   }
 
-  if (pipe(cpipefd) == -1) {
+  if (pipe(cpipefd) == -1) { // create another pipe for 2 way commmunication
     perror("pipe");
     exit(EXIT_FAILURE);
   }
+
   cpid = fork();
   if (cpid == -1) {
     perror("fork");
     exit(EXIT_FAILURE);
   }
 
-  if (cpid == 0) {     // in child proc, write from parent to child
-    close(ppipefd[1]); /* Close unused read end for parent*/
-    close(cpipefd[0]); // close unuse write end for child
-    while (read(ppipefd[0], &buf, 1) > 0) { // parent write to child
-      buf = toupper(buf);
-      write(cpipefd[1], &buf, 1); // write stringto child
+  // we have 2 pipes - ppidefd and cpipefid
+  // ppidefd = parent to write to child, child read form parent
+  // cpipefd is inverse = child write to parent, parent read from child
+  // so ppipefd - read end for parent closed when parent writing
+  // write end for child closed when child reading
+
+  // cpipefd - write end for parent closed when parent reading
+  //  read end for child closed when child writing
+
+  // pipes are byte stream, read 1 byte at time
+
+  if (cpid == 0) { // in child proc, child reads and writes to parent
+
+    close(ppipefd[1]);                      /* Close unused read end */
+    close(cpipefd[0]);                      // close unuse write end
+    while (read(ppipefd[0], &buf, 1) > 0) { // read form parent into buff
+      buf = toupper(buf); // transform char read frm parent to upper case
+      write(cpipefd[1], &buf, 1); // write new upper case letter to parent
     }
 
-    write(cpipefd[1], "\n", 1);
-    close(ppipefd[0]); // parent finish writing to child, close write end once
-                       // done
-    close(cpipefd[1]); // close read end for child once done reading string to
-                       // hcild
+    write(cpipefd[1], "\n", 1); // write line temrinator to parent
+
+    close(ppipefd[0]);   // parent finish writing to child, close write end once
+                         // done
+    close(cpipefd[1]);   // close read end for child once done reading string to
+                         // child
     _exit(EXIT_SUCCESS); // exit child
 
-  } else {             // in parent proc
-    close(ppipefd[0]); // Close write end for parent
-    close(cpipefd[1]); // close read end of pipe for child
+  } else {             // in parent proc, parent read form and write to child
+    close(ppipefd[0]); // Close unused ends of pipe - write end for ppip
+    close(cpipefd[1]); // close unused read end of pipe - read end of cpipe
 
-    write(ppipefd[1], argv[1], strlen(argv[1])); // write from child to parent
-    close(ppipefd[1]);                           /* Reader will see EOF */
-    while (read(cpipefd[0], &buf, 1) > 0) {
-      write(STDOUT_FILENO, &buf, 1);
+    write(ppipefd[1], argv[1],
+          strlen(argv[1])); // writes string from terminal to child child
+    close(ppipefd[1]);      // close once done writing
+    while (read(cpipefd[0], &buf, 1) > 0) { // read from child to parent into
+                                            // buf
+      write(STDOUT_FILENO, &buf, 1); // reads from child
     }
-    wait(NULL); /* Wait for child */
+    wait(NULL); /* Wait for child before exiting*/
     exit(EXIT_SUCCESS);
   }
 }

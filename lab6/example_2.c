@@ -32,17 +32,22 @@ typedef struct info {
 node_t *head = NULL;
 info_t info = {0};
 
+// sim to example 1 sort
 void insert_sorted(uint64_t data) {
+  // init new node
   node_t *new_node = malloc(sizeof(node_t));
   new_node->data = data;
   new_node->next = NULL;
 
   if (head == NULL) {
     head = new_node;
-  } else if (data < head->data) {
+  } // insert new blokc if  LL emoty
+  else if (data < head->data) {
     new_node->next = head;
     head = new_node;
-  } else {
+  } // insert at head if already sorted/ data < head
+
+  else { // traverse entire list to insert block sotred
     node_t *curr = head;
     node_t *prev = NULL;
 
@@ -61,7 +66,7 @@ void insert_sorted(uint64_t data) {
     }
   }
 
-  info.sum += data;
+  info.sum += data; // increments the sum of data of all new nodes
   //  printf("info.sum = %ld\n", info.sum);
 }
 
@@ -81,6 +86,7 @@ int index_of(uint64_t data) {
   return -1;
 }
 
+// calculates sum of all nodes
 int LLsum() {
   node_t *curr = head;
   int ret = 0;
@@ -107,6 +113,6 @@ int main() {
   TEST(info.sum == 1 + 3 + 5 + 2);
   TEST(index_of(2) == 1);
 
-  ASSERT(info.sum == sum);
+  ASSERT(info.sum == sum); // assert of sum of LL = info.sum
   return 0;
 }
